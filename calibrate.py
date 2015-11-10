@@ -24,7 +24,8 @@ def buildlist(sourcepath_name):
                 return columns
             columns.append(line.split(','))
 
-def epsg4326to3785(x, y):
+# transform from epsg 4326 to 3785
+def trans(x, y):
 	epsg4326 = Proj(proj='utm', zone=50, ellps='WGS84')
 	epsg3785 = Proj(init = 'epsg:3785')
 	x1, y1 = epsg4326(x, y)
@@ -33,18 +34,21 @@ def epsg4326to3785(x, y):
 
 def main():
 
-    print "This is a test."
-
     x, y = np.loadtxt('ins.txt', delimiter=',', usecols=(4,5), unpack=True)
 
     # epsg4236to3785(x, y)
-    print x
-    print y
 
+    for i in range(len(x)):
+        x[i], y[i] = trans(x[i], y[i])
 
+    rst = np.column_stack((x, y))
+    # print rst
+
+    np.savetxt('rst.csv', rst, delimiter=",", fmt="%s")
+    print ("Transformation completed.")
 
 if __name__ == '__main__':
-	start = time.time()
+	#start = time.time()
 	main()
 	#end = time.time()
 	#print(end - start)
