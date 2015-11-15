@@ -17,3 +17,16 @@ def ReadingDRMlink():
         linkID.append(link.linkid)
 
     fl.close()
+
+def ReadingDRMnode():
+    print '\treading DRMnode ...'
+    fn = open('filename', 'r')
+
+    while 1:
+        line = fn.readline()
+        if not line:
+            break
+        node = SHlink.SHlink(line)
+        nodelist[node.node1] = node
+
+    fn.close()
