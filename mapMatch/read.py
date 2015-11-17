@@ -30,3 +30,17 @@ def ReadingDRMnode():
         nodelist[node.node1] = node
 
     fn.close()
+
+def ReadingTrackInfo():
+    ft = open('filename', 'r')
+
+    while 1:
+        line = ft.readline()
+        if not line:
+            break;
+        record = TrackPoint.TrackPoint(line)
+        tracklist[record.datetime] = record
+        tracktime.append(record.datetime)
+
+    ft.close()
+''' global: nodelist linklist tracktime tracklist '''
