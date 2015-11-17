@@ -3,6 +3,7 @@ reading info of link and node
 '''
 
 import SHlink
+import TrackPoint
 
 def ReadingDRMlink():
     print '\treading DRMlink ...'
@@ -43,4 +44,5 @@ def ReadingTrackInfo():
         tracktime.append(record.datetime)
 
     ft.close()
+
 ''' global: nodelist linklist tracktime tracklist '''
