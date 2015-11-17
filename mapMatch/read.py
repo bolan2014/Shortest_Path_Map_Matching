@@ -1,13 +1,12 @@
 '''
-reading info of link and node
+reading info of link, node, track
 '''
 
 import SHlink
 import TrackPoint
 
-def ReadingDRMlink():
-    print '\treading DRMlink ...'
-    fl = open('filename', 'r')
+def ReadingDRMlink(linklist, linkID, filename):
+    fl = open(filename, 'r')
     
     while 1:
         line = fl.readline()
@@ -19,9 +18,8 @@ def ReadingDRMlink():
 
     fl.close()
 
-def ReadingDRMnode():
-    print '\treading DRMnode ...'
-    fn = open('filename', 'r')
+def ReadingDRMnode(nodelist, filename):
+    fn = open(filename, 'r')
 
     while 1:
         line = fn.readline()
@@ -32,8 +30,8 @@ def ReadingDRMnode():
 
     fn.close()
 
-def ReadingTrackInfo():
-    ft = open('filename', 'r')
+def ReadingTrackInfo(tracklist, tracktime, filename):
+    ft = open(filename, 'r')
 
     while 1:
         line = ft.readline()
@@ -45,4 +43,4 @@ def ReadingTrackInfo():
 
     ft.close()
 
-''' global: nodelist linklist tracktime tracklist '''
+''' global: nodelist linklist linkID tracktime tracklist '''
