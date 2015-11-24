@@ -1,38 +1,42 @@
+# coding:utf-8
+
 import sys
 sys.path.append('..')
 from common import Geometry as G
+# from common import DRMLink as DL
 
 def vertp2l(P, link):
-	vert = list()
-	P1 = G.Point()
-	P2 = G.Point()
 
-	if link.internumber > 0:
-		for i in range(link.internumber-1)	
-			P1.x = link.interlist[i][0]
-			P1.y = link.interlist[i][1]
-			P2.x = link.interlist[i+1][0]
-			P2.y = link.interlist[i+1][1]
-			if P1.y==P2.y:
-               intersection=G.Point()
-               intersection.x=P.x
-               intersection.y=P1.y
-               if checkpointonline(intersection,P1,P2)==1:
-                   vert.append(intersection)
+    vert = list()
+    P1 = G.Point()
+    P2 = G.Point()
+
+    if link.internumber > 0:
+        for i in range(link.internumber-1):	
+            P1.x = link.interlist[i][0]
+            P1.y = link.interlist[i][1]
+            P2.x = link.interlist[i+1][0]
+            P2.y = link.interlist[i+1][1]
+            if P1.y==P2.y:
+                intersection=G.Point()
+                intersection.x=P.x
+                intersection.y=P1.y
+                if G.checkpointonline(intersection,P1,P2)==1:
+                    vert.append(intersection)
             elif P1.x==P2.x:
-               intersection=G.Point()
-               intersection.x=P1.x
-               intersection.y=P.y
-               if checkpointonline(intersection,P1,P2)==1:
-                   vert.append(intersection)
+                intersection=G.Point()
+                intersection.x=P1.x
+                intersection.y=P.y
+                if G.checkpointonline(intersection,P1,P2)==1:
+                    vert.append(intersection)
             elif P1.x!=P2.x and P1.y!=P2.y:
-               intersection=G.Point()
-               k=(P2.y-P1.y)/(P2.x-P1.x)
-               intersection.x=(k**2*P1.x+k*(P.y-P1.y)+P.x)/(k**2+1.0)
-               intersection.y=k*(intersection.x-P1.x)+P1.y
+                intersection=G.Point()
+                k=(P2.y-P1.y)/(P2.x-P1.x)
+                intersection.x=(k**2*P1.x+k*(P.y-P1.y)+P.x)/(k**2+1.0)
+                intersection.y=k*(intersection.x-P1.x)+P1.y
 
-               if checkpointonline(intersection,P1,P2)==1:
-                   vert.append(intersection)
+                if G.checkpointonline(intersection,P1,P2)==1:
+                    vert.append(intersection)
     elif link.internumber==0:
         intersection=Point()
         intersection.x=nodelist[link.node1].long
@@ -40,7 +44,6 @@ def vertp2l(P, link):
         vert.append(intersection) 
     return vert
 
-#计算link上任意点P到node1的距离
 def distp2node1(P,link):
     d=0
     P1=Point()
@@ -58,7 +61,6 @@ def distp2node1(P,link):
                 d=d+geodist(P1,P2)
     return d
 
-#计算link外的点P到link的垂直距离
 def distp2link(P,link):
     vert=vertp2l(P,link)
     nvert=len(vert)
@@ -79,9 +81,7 @@ def distp2link(P,link):
             if dn[idn]==d:
                 return (d,vn[idn][0],vn[idn][1],link.linkid)
 
-def RevisePathEndpoints(tracklist, tracktime, mmpathnodes):
-    #修正起点
-    #先排除不需要修正的情况
+def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
     strackp=G.Point()
     strackp.x=tracklist[tracktime[0]].long
     strackp.y=tracklist[tracktime[0]].lat
@@ -127,8 +127,8 @@ def RevisePathEndpoints(tracklist, tracktime, mmpathnodes):
     #修正止点,修正止点和修正起点的思路一样，程序略微不同
     #先排除不需要修正的情况
     etrackp=G.Point()
-    etrackp.x=tracklist[trackdatetime[-1]].long
-    etrackp.y=tracklist[trackdatetime[-1]].lat
+    etrackp.x=tracklist[tracktime[-1]].long
+    etrackp.y=tracklist[tracktime[-1]].lat
     evert=vertp2l(etrackp,linklist[GLinkNode[mmpathnodes[-2]][mmpathnodes[-1]]])  #求垂足
     if not evert:    #如果垂足为空，则修正起点;否则不修正
         econnectlinks=[]   #收集止点候选link集中与当前路径终点相连通的link
@@ -167,3 +167,4 @@ def RevisePathEndpoints(tracklist, tracktime, mmpathnodes):
                    eaddlink=econnectlink
             if edistp2l<=40:  #如果距离起点最近路段在40以内，则把此路段添加到最短路径中
                 mmpathnodes.append(econnectnodes[eaddlink])
+    return mmpathnodes
