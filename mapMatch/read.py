@@ -36,7 +36,7 @@ def ReadingTrackInfo(tracklist, tracktime, fname):
     while True:
         line = ft.readline()
         if not line:
-            break;
+            break
         record = TrackPoint.TrackPoint(line)
         tracklist[record.datetime] = record
         tracktime.append(record.datetime)
