@@ -53,6 +53,7 @@ def writetxt(txt, files):
      flink.close()
 
 def trans(rfile, wfile):
+    print 'Transfering gps data...'
     txt = readtxt(rfile)
     for i in range(len(txt)):
         xIn=float(txt[i][4])
