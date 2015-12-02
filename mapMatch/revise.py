@@ -1,9 +1,12 @@
 # coding:utf-8
 
+import os
 import sys
 sys.path.append('..')
 from common import Geometry as G
 # from common import DRMLink as DL
+
+pwd = os.getcwd()
 
 def vertp2l(P, link):
 
@@ -68,13 +71,13 @@ def distp2link(P,link):
         d=-1
         return (d,-1,-1,link.linkid)
     elif nvert==1:
-        d=geodist(P,vert[0])
+        d=G.geodist(P,vert[0])
         return (d,vert[0].x,vert[0].y,link.linkid)
     else:
         dn=[]
         vn=[]  
         for ver in vert:
-            dn.append(geodist(P,ver))
+            dn.append(G.geodist(P,ver))
             vn.append((ver.x,ver.y))
         d=min(dn) 
         for idn in range(len(dn)):
@@ -168,3 +171,32 @@ def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
             if edistp2l<=40:  #如果距离起点最近路段在40以内，则把此路段添加到最短路径中
                 mmpathnodes.append(econnectnodes[eaddlink])
     return mmpathnodes
+
+   
+def point_on_road(tracktime, tracklist, pathlinks, linklist, t_file):
+    points = dict()
+    for time in tracktime:
+        dlist = list()         
+        dvlist = list()
+        TrackP = G.Point()
+        TrackP.x=tracklist[time].long
+        TrackP.y=tracklist[time].lat
+        for link in pathlinks:
+            linkp=linklist[link]
+            distvertlink = distp2link(TrackP,linkp)
+            if distvertlink[0] > 0:
+                dlist.append(distvertlink[0])
+                dvlist.append(distvertlink)
+        if len(dlist) == 1:
+            points[time] = dvlist[0]
+        elif len(dlist) > 1:
+            dmin = min(dlist)
+            for dv in dvlist:
+                if dv[0] == dmin:
+                    points[time] = dv
+                    break
+    p_file = open(pwd+'/point/'+t_file, 'w')
+    for key in points:
+        p_file.write(str(points[key])[1:-1]+'\n')
+    p_file.close()
+
