@@ -197,6 +197,6 @@ def point_on_road(tracktime, tracklist, pathlinks, linklist, t_file):
                     break
     p_file = open(pwd+'/point/'+t_file, 'w')
     for key in points:
-        p_file.write(str(points[key])[1:-1]+'\n')
+        p_file.write(repr(points[key])[1:-1]+'\n')
     p_file.close()
 
