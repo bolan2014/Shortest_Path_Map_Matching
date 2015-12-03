@@ -53,7 +53,6 @@ def writetxt(txt, files):
      flink.close()
 
 def trans(rfile, wfile):
-    print 'Transfering gps data...'
     txt = readtxt(rfile)
     for i in range(len(txt)):
         xIn=float(txt[i][4])
@@ -63,5 +62,3 @@ def trans(rfile, wfile):
         txt[i][5]=str(yIn)
 
     writetxt(txt, wfile)
-    print ("Transformation completed.\n")
-
