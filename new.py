@@ -10,9 +10,11 @@ from mapMatch import revise as rvs
 from common import RemoveDuplicates
 from common import transfer as t
 from common import Dijkstra as Dj
+from common import Geometry as G
 
 REDUCTION_RATE = 0.01
 REDUCE2 = 0.3
+pwd = os.getcwd()
 
 def main():
 
@@ -21,16 +23,17 @@ def main():
 
     tracktime = list()
     tracklist = dict()
-    w_file = os.getcwd() + '/gps/' + t_file
-    print 'Tansfering GPS data...\n'
-    t.trans(os.getcwd()+'/raw_gps/'+t_file, w_file)
+    w_file = pwd+'/gps/'+t_file
+    print 'Tansfering gps data...\n'
+    t.trans(pwd+'/raw_gps/'+t_file, w_file)
+    print ("Transformation completed.\n")
     r.ReadingTrackInfo(tracklist, tracktime, w_file)
 
     linklist = dict()
     linkID = list()
     nodelist = dict()
 
-    m_file = os.getcwd() + '/map.txt'
+    m_file = pwd+'/map.txt'
 
     print 'Reading DRMLink into linklist and linkID...'
     r.ReadingDRMlink(linklist, linkID, m_file)
@@ -163,25 +166,28 @@ def main():
                     Gpredecessor.append(GLinkNode[key2][key])
         # print shortest_path
 
-        if shortest_path:
-            rvs.RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, shortest_path)
+    if shortest_path:
+        rvs.RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, shortest_path)
         
-        ipa = 0
-        pathlinks = list()
-        rst_file = open('path/'+t_file, 'w')
-        pathnodes = shortest_path
-        if pathnodes:
-            while ipa <= len(pathnodes)-2:
-                lid = GLinkNode[pathnodes[ipa]][pathnodes[ipa+1]]
-                pathlinks.append(lid)
-                ipa += 1
-            for link in pathlinks:
-                rst_file.write('14306')
-                rst_file.write(',' + str(link) + '\n')
-        else:
-            rst_file.write('14306')
-            rst_file.write(',' + '0' + '\n')
+    ipa = 0
+    pathlinks = list()
+    rst_file = open('path/'+t_file, 'w')
+    pathnodes = shortest_path
+    if pathnodes:
+        while ipa <= len(pathnodes)-2:
+            lid = GLinkNode[pathnodes[ipa]][pathnodes[ipa+1]]
+            pathlinks.append(lid)
+            ipa += 1
+        for link in pathlinks:
+            rst_file.write(t_file[:-4])
+            rst_file.write(',' + str(link) + '\n')
+    else:
+        rst_file.write(t_file[:-4])
+        rst_file.write(',' + '0' + '\n')
         rst_file.close()
+
+    print '\nAttaching points to road...' 
+    rvs.point_on_road(tracktime, tracklist, pathlinks, linklist, t_file)   
     print '\nDone.'
               
 if __name__ == "__main__":
