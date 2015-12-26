@@ -32,7 +32,9 @@ Use two kinds of grids to divide road networds, and compute how many gps points 
 
 Read info of link, node and track.
 
-- attach gps points to roads.
+- revise.py
+
+Attach gps points to roads.
 
 ##common
 
