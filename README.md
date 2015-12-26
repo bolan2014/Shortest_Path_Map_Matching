@@ -10,4 +10,32 @@ Do some data analysis with NumPy.
 
  Used to get trips with customer from raw data after split.
 
+- new.py
 
+*main procedure*
+
+##mapMatch
+
+- SHlink.py
+
+Make road info structured
+
+- TrackPoint.py
+
+Make gps data structured
+
+- grid.py
+
+Use two kinds of grids to divide road networds, and compute how many gps points fall in grids.
+
+- read.py
+
+Read info of link, node and track.
+
+- attach gps points to roads.
+
+##common
+
+- transfer.py
+
+Calibrate raw gps points.
