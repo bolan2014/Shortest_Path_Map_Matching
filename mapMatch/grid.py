@@ -57,7 +57,7 @@ def CollectGridLinks(type, linklist, linkID):
         gridnumlong = GRID_LONG_NUM_B
         gridnumlat = GRID_LAT_NUM_B
 
-    grid = [[[] for i in range(3*gridnumlat)] for j in range(3*gridnumlong)]
+    grid = [[[] for i in range(5*gridnumlat)] for j in range(5*gridnumlong)]
     (ori_longi, ori_lat) = (121.31, 31.08)
     for ilink in linkID:
         if linklist[ilink].internumber>0:
@@ -65,7 +65,7 @@ def CollectGridLinks(type, linklist, linkID):
             counti = 0
             for n in range(linklist[ilink].internumber):
                 (i, j) = GetGridIndex(type, v[n][0], v[n][1])
-                if i>=3*gridnumlong or i<0 or j>=3*gridnumlat or j<0:
+                if i>=5*gridnumlong or i<0 or j>=5*gridnumlat or j<0:
                     break
                 counti=counti+1
             if counti==linklist[ilink].internumber:
@@ -125,7 +125,7 @@ def CollectGridLinks(type, linklist, linkID):
             x=nodelist[meshnode].long     
             y=nodelist[meshnode].lat  
             (i, j)=GetGridIndex(type,x,y)
-            if i>=3*gridnumlong or i<0 or j>=3*gridnumlat or j<0:
+            if i>=5*gridnumlong or i<0 or j>=5*gridnumlat or j<0:
                 continue           
             if not ilink in grid[i][j]:
                 grid[i][j].append(ilink)
@@ -184,7 +184,7 @@ def AdjacentGridLinks(type, x ,y, gridlink_):
          glinks=glinks+gridlink[x+1][y]
          glinks=glinks+gridlink[x+1][y+1]
          glinks=glinks+gridlink[x][y+1]
-      elif y==3*gridnumlat-1:
+      elif y==5*gridnumlat-1:
          glinks=glinks+gridlink[x][y]
          glinks=glinks+gridlink[x][y-1]
          glinks=glinks+gridlink[x+1][y-1]
@@ -196,13 +196,13 @@ def AdjacentGridLinks(type, x ,y, gridlink_):
          glinks=glinks+gridlink[x+1][y]
          glinks=glinks+gridlink[x+1][y+1]
          glinks=glinks+gridlink[x][y+1]
-    elif x==3*gridnumlong-1:
+    elif x==5*gridnumlong-1:
       if y==0:
          glinks=glinks+gridlink[x][y]
          glinks=glinks+gridlink[x][y+1]
          glinks=glinks+gridlink[x-1][y+1]
          glinks=glinks+gridlink[x-1][y]
-      elif y==3*gridnumlat-1:
+      elif y==5*gridnumlat-1:
          glinks=glinks+gridlink[x][y]
          glinks=glinks+gridlink[x-1][y]
          glinks=glinks+gridlink[x-1][y-1]
@@ -222,7 +222,7 @@ def AdjacentGridLinks(type, x ,y, gridlink_):
          glinks=glinks+gridlink[x][y+1]
          glinks=glinks+gridlink[x-1][y+1]
          glinks=glinks+gridlink[x-1][y]
-      elif y==3*gridnumlat-1:
+      elif y==5*gridnumlat-1:
          glinks=glinks+gridlink[x][y]
          glinks=glinks+gridlink[x-1][y]
          glinks=glinks+gridlink[x-1][y-1]
