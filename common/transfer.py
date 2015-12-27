@@ -52,7 +52,7 @@ def writetxt(txt, files):
          flink.writelines(joinline)
      flink.close()
 
-def trans(rfile, wfile):
+'''def trans(rfile, wfile):
     txt = readtxt(rfile)
     for i in range(len(txt)):
         xIn=float(txt[i][4])
@@ -60,5 +60,26 @@ def trans(rfile, wfile):
         xIn,yIn=transform(xIn,yIn)
         txt[i][4]=str(xIn)
         txt[i][5]=str(yIn)
+        '''
 
-    writetxt(txt, wfile)
+def trans_trackInfo(rfile, wfile, tracklist, tracktime):
+    fr = open(rfile, 'r')
+    fw = open(wfile, 'w')
+    for line in fr:
+        tmp = line.split(',')
+        x = float(tmp[4])
+        y = float(tmp[5])
+        x,y = transform(x, y) #caliberate gps points
+        tmp[4] = str(x)
+        tmp[5] = str(y)
+
+        info = ",".join(tmp)
+        fw.writelines(info + '\n')
+
+        #get track info
+        record = TrackPoint.TrackPoint(info)
+        tracklist[record.datetime] = record
+        tracktime.append(record.datetime)
+
+    fr.close()
+    fw.close()
