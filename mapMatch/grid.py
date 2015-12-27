@@ -1,6 +1,9 @@
 '''
 two kinds of grid.
 '''
+import sys
+sys.path.append("..")
+from common import Geometry as G
 
 GRID_LONG_NUM_A = 50
 GRID_LAT_NUM_A = 50
@@ -8,7 +11,10 @@ GRID_LAT_NUM_A = 50
 GRID_LONG_NUM_B = 500
 GRID_LAT_NUM_B = 400
 
-def GetGridIndex(type,longi,lat):
+TRIP_FIRST_ID = 100
+TRIP_LAST_ID = 111
+
+def GetGridIndex(type, longi, lat):
     if type==1:
         gridnumlong=GRID_LONG_NUM_A
         gridnumlat=GRID_LAT_NUM_A
@@ -43,17 +49,17 @@ def GetPointGridxy(type, longi, lat):
 
     return (x, y)
 
-def CollectGridLinks(type):
-	if type == 1:
-		gridnumlong = GRID_LONG_NUM_A
-		gridnumlat = GRID_LAT_NUM_A
-	elif type == 2:
-		gridnumlong = GRID_LONG_NUM_B
-		gridnumlat = GRID_LAT_NUM_B
+def CollectGridLinks(type, linklist, linkID):
+    if type == 1:
+        gridnumlong = GRID_LONG_NUM_A
+        gridnumlat = GRID_LAT_NUM_A
+    elif type == 2:
+        gridnumlong = GRID_LONG_NUM_B
+        gridnumlat = GRID_LAT_NUM_B
 
-	grid = [[[] for i in range(3*gridnumlat)] for j in range(3*gridnumlong)]
-	(ori_longi, ori_lat) = (121.31, 31.08)
-	for ilink in linkID:
+    grid = [[[] for i in range(3*gridnumlat)] for j in range(3*gridnumlong)]
+    (ori_longi, ori_lat) = (121.31, 31.08)
+    for ilink in linkID:
         if linklist[ilink].internumber>0:
             v = linklist[ilink].interlist
             counti = 0
@@ -83,12 +89,12 @@ def CollectGridLinks(type):
                             if not ilink in grid[i_x+mi][j]:
                                 grid[i_x+mi][j].append(ilink)
                     if m1>0 and m2>0:
-                        A=Point()
-                        B=Point()            
-                        P1=Point()
-                        P2=Point()
-                        P3=Point()
-                        P4=Point()
+                        A=G.Point()
+                        B=G.Point()            
+                        P1=G.Point()
+                        P2=G.Point()
+                        P3=G.Point()
+                        P4=G.Point()
                         (A.x,A.y)= GetPointGridxy(type,v[n-1][0],v[n-1][1])
                         (B.x,B.y)= GetPointGridxy(type,v[n][0],v[n][1])              
                        
@@ -103,7 +109,7 @@ def CollectGridLinks(type):
                                  P3.y=j_y+r2+1
                                  P4.x=i_x+r1
                                  P4.y=j_y+r2+1
-                                 if checkintersect(A,B,P1,P2,P3,P4)==1:
+                                 if G.checkintersect(A,B,P1,P2,P3,P4)==1:
                                     if not ilink in grid[i_x+r1][j_y+r2]:
                                         grid[i_x+r1][j_y+r2].append(ilink)
                     ip=i
@@ -126,7 +132,7 @@ def AddLink( g, u, v, w ):
     else:
         g[u] = {v:w}
 
-def AddVirtualLinks(net,s_candidate,e_candidate):
+def AddVirtualLinks(net, s_candidate, e_candidate, linklist, end_mod):
     for i_id in s_candidate:
         ilink = linklist[i_id]
         if ilink.getregulation() == 1:
@@ -155,15 +161,15 @@ def AddVirtualLinks(net,s_candidate,e_candidate):
             AddLink(net, ilink.node2, TRIP_LAST_ID, 0.0)
             AddLink(end_mod, ilink.node2, TRIP_LAST_ID, ilink.node1)
 
-def AdjacentGridLinks(type,x,y):
+def AdjacentGridLinks(type, x ,y, gridlink_):
     if type==1:
-        gridlink=gridlink_1
         gridnumlong=GRID_LONG_NUM_A
         gridnumlat=GRID_LAT_NUM_A
     elif type==2:
-        gridlink=gridlink_2
         gridnumlong=GRID_LONG_NUM_B
         gridnumlat=GRID_LAT_NUM_B    
+
+    gridlink=gridlink_
     glinks=[]
     
     if x==0:
