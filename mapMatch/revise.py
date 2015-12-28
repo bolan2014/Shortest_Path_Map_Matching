@@ -84,11 +84,11 @@ def distp2link(P,link):
             if dn[idn]==d:
                 return (d,vn[idn][0],vn[idn][1],link.linkid)
 
-def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
+def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, pathnodes):
     strackp=G.Point()
     strackp.x=tracklist[tracktime[0]].long
     strackp.y=tracklist[tracktime[0]].lat
-    svert=vertp2l(strackp,linklist[GLinkNode[mmpathnodes[0]][mmpathnodes[1]]])  #求垂足
+    svert=vertp2l(strackp,linklist[GLinkNode[pathnodes[0]][pathnodes[1]]])  #求垂足
     if not svert:    #如果垂足为空，则修正起点；否则不修正
         sconnectlinks=[]   #收集起点候选link集中与当前路径起点相连通的link
         sconnectnodes={}   #保存起点候选link集中与当前路径起点相连通的link的起点 
@@ -97,21 +97,21 @@ def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
             snod1=sdrmlink.node1
             snod2=sdrmlink.node2
             if sdrmlink.regulation==2:
-                if snod2==mmpathnodes[0]:
+                if snod2==pathnodes[0]:
                     sconnectlinks.append(s_link)
                     sconnectnodes[s_link]= snod1
                     continue
             elif sdrmlink.regulation==3:
-                if snod1==mmpathnodes[0]:
+                if snod1==pathnodes[0]:
                     sconnectlinks.append(s_link)
                     sconnectnodes[s_link]= snod2
                     continue 
             elif sdrmlink.regulation==1:
-                if snod2==mmpathnodes[0]:
+                if snod2==pathnodes[0]:
                     sconnectlinks.append(s_link)
                     sconnectnodes[s_link]= snod1
                     continue
-                elif snod1==mmpathnodes[0]:
+                elif snod1==pathnodes[0]:
                     sconnectlinks.append(s_link)
                     sconnectnodes[s_link]= snod2
                     continue    
@@ -125,14 +125,14 @@ def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
                    sdistp2l=dtemp[0]
                    saddlink=sconnectlink
             if sdistp2l<=40:  #如果距离起点最近路段在40以内，则把此路段添加到最短路径中
-                mmpathnodes.insert(0,sconnectnodes[saddlink])
+                pathnodes.insert(0,sconnectnodes[saddlink])
                     
     #修正止点,修正止点和修正起点的思路一样，程序略微不同
     #先排除不需要修正的情况
     etrackp=G.Point()
     etrackp.x=tracklist[tracktime[-1]].long
     etrackp.y=tracklist[tracktime[-1]].lat
-    evert=vertp2l(etrackp,linklist[GLinkNode[mmpathnodes[-2]][mmpathnodes[-1]]])  #求垂足
+    evert=vertp2l(etrackp,linklist[GLinkNode[pathnodes[-2]][pathnodes[-1]]])  #求垂足
     if not evert:    #如果垂足为空，则修正起点;否则不修正
         econnectlinks=[]   #收集止点候选link集中与当前路径终点相连通的link
         econnectnodes={}   #保存止点候选link集中与当前路径终点相连通的link的终点 
@@ -141,25 +141,25 @@ def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
             enod1=edrmlink.node1
             enod2=edrmlink.node2
             if edrmlink.regulation==2:
-                if enod1==mmpathnodes[-1]:
+                if enod1==pathnodes[-1]:
                     econnectlinks.append(e_link)
                     econnectnodes[e_link]= enod2
                     continue
             elif edrmlink.regulation==3:
-                if enod2==mmpathnodes[-1]:
+                if enod2==pathnodes[-1]:
                     econnectlinks.append(e_link)
                     econnectnodes[e_link]= enod1
                     continue 
             elif edrmlink.regulation==1:
-                if enod2==mmpathnodes[-1]:
+                if enod2==pathnodes[-1]:
                     econnectlinks.append(e_link)
                     econnectnodes[e_link]= enod1
                     continue
-                elif enod1==mmpathnodes[-1]:
+                elif enod1==pathnodes[-1]:
                     econnectlinks.append(e_link)
                     econnectnodes[e_link]= enod2
                     continue
-        #求econnectlinks中与止点距离最短的link，并把相应的node添加到mmpathnodes当中       
+        #求econnectlinks中与止点距离最短的link，并把相应的node添加到pathnodes当中       
         if econnectlinks:
             edistp2l=100   #匹配路段必须在40m以内，此处初始值设只要大于40即可 
             eaddlink=econnectlinks[0]  # 
@@ -169,8 +169,8 @@ def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, mmpathnodes):
                    edistp2l=dtemp[0]
                    eaddlink=econnectlink
             if edistp2l<=40:  #如果距离起点最近路段在40以内，则把此路段添加到最短路径中
-                mmpathnodes.append(econnectnodes[eaddlink])
-    return mmpathnodes
+                pathnodes.append(econnectnodes[eaddlink])
+    return pathnodes
 
    
 def point_on_road(tracktime, tracklist, pathlinks, linklist, t_file):
@@ -196,6 +196,8 @@ def point_on_road(tracktime, tracklist, pathlinks, linklist, t_file):
                     points[time] = dv
                     break
     p_file = open(pwd+'/point/'+t_file, 'w')
+    map(int, points.keys())
+    points.keys().sort()
     for key in points:
         p_file.write(repr(points[key])[1:-1]+'\n')
     p_file.close()
