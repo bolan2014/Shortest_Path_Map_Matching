@@ -136,10 +136,10 @@ def AddLink( g, u, v, w ):
 def AddVirtualLinks(net, s_candidate, e_candidate, linklist, end_mod):
     for i_id in s_candidate:
         ilink = linklist[i_id]
-        if ilink.getregulation() == 1:
+        if ilink.getregulation() == 2:
             AddLink(net, TRIP_FIRST_ID, ilink.node2, 0.0)
             AddLink(end_mod, TRIP_FIRST_ID, ilink.node2, ilink.node1)
-        elif ilink.getregulation() == -1:
+        elif ilink.getregulation() == 3:
             AddLink(net, TRIP_FIRST_ID, ilink.node1, 0.0)
             AddLink(end_mod, TRIP_FIRST_ID, ilink.node1, ilink.node2)
         else:
@@ -150,10 +150,10 @@ def AddVirtualLinks(net, s_candidate, e_candidate, linklist, end_mod):
 
     for i_id in e_candidate:
         ilink = linklist[i_id]
-        if ilink.getregulation() == 1:
+        if ilink.getregulation() == 2:
             AddLink(net, ilink.node1, TRIP_LAST_ID, 0.0)
             AddLink(end_mod, ilink.node1, TRIP_LAST_ID, ilink.node2)
-        elif ilink.getregulation() == -1:
+        elif ilink.getregulation() == 3:
             AddLink(net, ilink.node2, TRIP_LAST_ID, 0.0)
             AddLink(end_mod, ilink.node2, TRIP_LAST_ID, ilink.node1)
         else:

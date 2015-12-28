@@ -168,7 +168,7 @@ def main():
         # print shortest_path
 
     if shortest_path:
-        rvs.RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, shortest_path)
+        rvs.RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, e_links, shortest_path)
         
     ipa = 0
     pathlinks = list()
