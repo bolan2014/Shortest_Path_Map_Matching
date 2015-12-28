@@ -19,15 +19,15 @@ pwd = os.getcwd()
 def main():
 
     t_file = sys.argv[1]
-    print '\nInitializing...\n'
+    #print '\nInitializing...\n'
 
     tracktime = list()
     tracklist = dict()
     w_file = pwd+'/gps/'+t_file
-    print 'Tansfering gps data...\n'
-    t.trans(pwd+'/raw_gps/'+t_file, w_file)
-    print ("Transformation completed.\n")
-    r.ReadingTrackInfo(tracklist, tracktime, w_file)
+    #print 'Tansfering gps data...\n'
+    t.trans_trackInfo(pwd+'/section/'+t_file, w_file, tracklist, tracktime)
+    #print ("Transformation completed.\n")
+    #r.ReadingTrackInfo(tracklist, tracktime, w_file)
 
     linklist = dict()
     linkID = list()
@@ -35,16 +35,16 @@ def main():
 
     m_file = pwd+'/map.txt'
 
-    print 'Reading DRMLink into linklist and linkID...'
-    r.ReadingDRMlink(linklist, linkID, m_file)
+    #print 'Reading DRMLink info...'
+    r.ReadingDRMinfo(m_file, linklist, linkID, nodelist)
 
-    print '\nReading DRMNode into nodelist...'
-    r.ReadingDRMnode(nodelist, m_file)
+    #print '\nReading DRMNode into nodelist...'
+    #r.ReadingDRMnode(nodelist, m_file)
 
-    print '\nCollecting links of Grid for type 1...'
+    #print '\nCollecting links of Grid for type 1...'
     gridlink_1 = g.CollectGridLinks(1, linklist, linkID)
 
-    print '\nCollecting links of Grid for type 2...'
+    #print '\nCollecting links of Grid for type 2...'
     gridlink_2 = g.CollectGridLinks(2, linklist, linkID)
 
     G1 = list()
@@ -79,6 +79,7 @@ def main():
         for itrack in range(i_start, i_end+1):
             track_line = tracklist[tracktime[itrack]]
             (x1, y1) = g.GetGridIndex(1, track_line.long, track_line.lat)
+            # print (x1, y1), len(gridlink_1)
             G1 += g.AdjacentGridLinks(1, x1, y1, gridlink_1)
             (x2, y2) = g.GetGridIndex(2, track_line.long, track_line.lat)
             G2 += g.AdjacentGridLinks(2, x2, y2, gridlink_2)
@@ -139,7 +140,7 @@ def main():
     # print 'start links:', s_links
     # print 'end links:', e_links
 
-    print '\nFinding shortest path...'
+    #print '\nFinding shortest path...'
 
     TRIP_FIRST_ID = 100
     TRIP_LAST_ID = 111
@@ -186,9 +187,9 @@ def main():
         rst_file.write(',' + '0' + '\n')
         rst_file.close()
 
-    print '\nAttaching points to road...' 
+    #print '\nAttaching points to road...' 
     rvs.point_on_road(tracktime, tracklist, pathlinks, linklist, t_file)   
-    print '\nDone.'
+    #print '\nDone.'
               
 if __name__ == "__main__":
     main()

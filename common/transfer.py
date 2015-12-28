@@ -1,4 +1,7 @@
 from math import sqrt,sin,cos
+import sys
+sys.path.append("..")
+from mapMatch import TrackPoint
 
 #GPS point transforming process, only works in PRC.
 pi=3.14159265358979324

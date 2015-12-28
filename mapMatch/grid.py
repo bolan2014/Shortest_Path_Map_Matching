@@ -67,12 +67,13 @@ def CollectGridLinks(type, linklist, linkID):
                 (i, j) = GetGridIndex(type, v[n][0], v[n][1])
                 if i>=5*gridnumlong or i<0 or j>=5*gridnumlat or j<0:
                     break
-                counti=counti+1
+                counti += 1
             if counti==linklist[ilink].internumber:
-                for n in range(counti):
-                    (i, j)=GetGridIndex(type, v[n][0], v[n][1])		
-                    if ilink not in grid[i][j]:
-                        grid[i][j].append(ilink) 
+                for n in range(1, counti):
+                    (ip, jp) = GetGridIndex(type, v[n-1][0], v[n-1][1])		
+                    if ilink not in grid[ip][jp]:
+                        grid[i][j].append(ilink)
+                    (i, j) = GetGridIndex(type, v[n][0], v[n][1])
                     
                     m1=abs(i-ip)
                     m2=abs(j-jp)
