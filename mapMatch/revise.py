@@ -84,7 +84,7 @@ def distp2link(P,link):
             if dn[idn]==d:
                 return (d,vn[idn][0],vn[idn][1],link.linkid)
 
-def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, pathnodes):
+def RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, e_links, pathnodes):
     strackp=G.Point()
     strackp.x=tracklist[tracktime[0]].long
     strackp.y=tracklist[tracktime[0]].lat
