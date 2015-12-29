@@ -57,7 +57,7 @@ def CollectGridLinks(type, linklist, linkID):
         gridnumlong = GRID_LONG_NUM_B
         gridnumlat = GRID_LAT_NUM_B
 
-    grid = [[[] for i in range(5*gridnumlat)] for j in range(5*gridnumlong)]
+    grid = [[[] for i in range(3*gridnumlat)] for j in range(3*gridnumlong)]
     (ori_longi, ori_lat) = (121.31, 31.08)
     for ilink in linkID:
         if linklist[ilink].internumber>0:
@@ -65,7 +65,7 @@ def CollectGridLinks(type, linklist, linkID):
             counti = 0
             for n in range(linklist[ilink].internumber):
                 (i, j) = GetGridIndex(type, v[n][0], v[n][1])
-                if i>=5*gridnumlong or i<0 or j>=5*gridnumlat or j<0:
+                if i>=3*gridnumlong or i<0 or j>=3*gridnumlat or j<0:
                     break
                 counti += 1
             if counti==linklist[ilink].internumber:

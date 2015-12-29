@@ -4,7 +4,6 @@ GPS data processing
 
 import os
 import sys
-import string
 from mapMatch import read as r
 from mapMatch import grid as g
 from mapMatch import revise as rvs
@@ -38,7 +37,7 @@ def main():
     gridlink_2 = g.CollectGridLinks(2, linklist, linkID)
 
     for folder in os.listdir('section'):
-        if string.atoi(folder) > name:
+        if int(folder) < int(name):
             continue
         for t_file in os.listdir('section/'+folder):
 
@@ -59,10 +58,10 @@ def main():
             while True:
                 try:
                     itime = tracktime[i_start]
+                    (x2, y2) = g.GetGridIndex(2, tracklist[itime].long, tracklist[itime].lat)
+                    track_links = g.AdjacentGridLinks(2, x2, y2, gridlink_2)
                 except IndexError:
                     break
-                (x2, y2) = g.GetGridIndex(2, tracklist[itime].long, tracklist[itime].lat)
-                track_links = g.AdjacentGridLinks(2, x2, y2, gridlink_2)
                 if track_links:
                     s_links = track_links
                     break
@@ -77,7 +76,10 @@ def main():
                 except IndexError:
                     break
                 (x2, y2) = g.GetGridIndex(2, tracklist[itime].long, tracklist[itime].lat)
-                track_links = g.AdjacentGridLinks(2, x2, y2, gridlink_2)
+                try:
+                    track_links = g.AdjacentGridLinks(2, x2, y2, gridlink_2)
+                except IndexError:
+                    break
                 if track_links:
                     e_links = track_links
                     break
@@ -90,10 +92,12 @@ def main():
                 for itrack in range(i_start, i_end+1):
                     track_line = tracklist[tracktime[itrack]]
                     (x1, y1) = g.GetGridIndex(1, track_line.long, track_line.lat)
-                    # print (x1, y1), len(gridlink_1)
-                    G1 += g.AdjacentGridLinks(1, x1, y1, gridlink_1)
-                    (x2, y2) = g.GetGridIndex(2, track_line.long, track_line.lat)
-                    G2 += g.AdjacentGridLinks(2, x2, y2, gridlink_2)
+                    try:
+                        G1 += g.AdjacentGridLinks(1, x1, y1, gridlink_1)
+                        (x2, y2) = g.GetGridIndex(2, track_line.long, track_line.lat)
+                        G2 += g.AdjacentGridLinks(2, x2, y2, gridlink_2)
+                    except IndexError:
+                        continue
             else:
                 continue
             G1 = RemoveDuplicates.unique(G1)
@@ -180,15 +184,20 @@ def main():
                 # print shortest_path
 
             if shortest_path:
-                rvs.RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, e_links, shortest_path)
-                
+                try:
+                    rvs.RevisePathEndpoints(tracklist, tracktime, linklist, GLinkNode, s_links, e_links, shortest_path)
+                except KeyError:
+                    continue
             ipa = 0
             pathlinks = list()
             rst_file = open('path/'+folder+'/'+t_file, 'w')
             pathnodes = shortest_path
             if pathnodes:
                 while ipa <= len(pathnodes)-2:
-                    lid = GLinkNode[pathnodes[ipa]][pathnodes[ipa+1]]
+                    try:
+                        lid = GLinkNode[pathnodes[ipa]][pathnodes[ipa+1]]
+                    except KeyError:
+                        continue
                     pathlinks.append(lid)
                     ipa += 1
                 for link in pathlinks:
