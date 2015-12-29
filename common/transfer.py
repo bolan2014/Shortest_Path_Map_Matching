@@ -1,7 +1,10 @@
 from math import sqrt,sin,cos
+import os
 import sys
 sys.path.append("..")
 from mapMatch import TrackPoint
+
+pwd = os.getcwd()+'/'
 
 #GPS point transforming process, only works in PRC.
 pi=3.14159265358979324
@@ -35,39 +38,9 @@ def transform(lon,lat):
     gcjlon=lon+dlon
     return gcjlon,gcjlat
 
-#main process on txt
-def readtxt(files):
-    flink=open(files,'r')
-    d=[]
-    while 1:
-        line=flink.readline() 
-        if not line:
-            break
-        linesp=line.split(',')
-        d.append(linesp)
-    flink.close()
-    return d
-
-def writetxt(txt, files):
-     flink=open(files,'w')
-     for i in range(len(txt)):
-         joinline=",".join(txt[i])
-         flink.writelines(joinline)
-     flink.close()
-
-'''def trans(rfile, wfile):
-    txt = readtxt(rfile)
-    for i in range(len(txt)):
-        xIn=float(txt[i][4])
-        yIn=float(txt[i][5])
-        xIn,yIn=transform(xIn,yIn)
-        txt[i][4]=str(xIn)
-        txt[i][5]=str(yIn)
-        '''
-
 def trans_trackInfo(rfile, wfile, tracklist, tracktime):
-    fr = open(rfile, 'r')
-    fw = open(wfile, 'w')
+    fr = open(pwd+rfile, 'r')
+    fw = open(pwd+wfile, 'w')
     for line in fr:
         tmp = line.split(',')
         x = float(tmp[4])

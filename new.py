@@ -4,6 +4,7 @@ GPS data processing
 
 import os
 import sys
+import string
 from mapMatch import read as r
 from mapMatch import grid as g
 from mapMatch import revise as rvs
@@ -18,7 +19,7 @@ pwd = os.getcwd()
 
 def main():
 
-    file = sys.argv[1]
+    name = sys.argv[1]
     #print '\nInitializing...\n'
 
     linklist = dict()
@@ -37,7 +38,7 @@ def main():
     gridlink_2 = g.CollectGridLinks(2, linklist, linkID)
 
     for folder in os.listdir('section'):
-        if folder > str(file):
+        if string.atoi(folder) > name:
             continue
         for t_file in os.listdir('section/'+folder):
 
@@ -45,18 +46,21 @@ def main():
             tracklist = dict()
             w_file = 'gps/'+folder+'/'+t_file
             #print 'Tansfering gps data...\n'
-            t.trans_trackInfo('/section/'+folder+'/'+t_file, w_file, tracklist, tracktime)
+            t.trans_trackInfo('section/'+folder+'/'+t_file, w_file, tracklist, tracktime)
             #print ("Transformation completed.\n")
 
             G1 = list()
             G2 = list()
 
-            if not tracklist:
+            if not tracktime:
                 continue
 
             i_start = 0
             while True:
-                itime = tracktime[i_start]
+                try:
+                    itime = tracktime[i_start]
+                except IndexError:
+                    break
                 (x2, y2) = g.GetGridIndex(2, tracklist[itime].long, tracklist[itime].lat)
                 track_links = g.AdjacentGridLinks(2, x2, y2, gridlink_2)
                 if track_links:
@@ -68,7 +72,10 @@ def main():
             i_end = len(tracktime)-1
 
             while True:
-                itime = tracktime[i_end]
+                try:
+                    itime = tracktime[i_end]
+                except IndexError:
+                    break
                 (x2, y2) = g.GetGridIndex(2, tracklist[itime].long, tracklist[itime].lat)
                 track_links = g.AdjacentGridLinks(2, x2, y2, gridlink_2)
                 if track_links:
@@ -79,7 +86,7 @@ def main():
                 i_end -= 1
 
             track_number = i_end-i_start+1    
-            if track_number >= 0:
+            if track_number > 0:
                 for itrack in range(i_start, i_end+1):
                     track_line = tracklist[tracktime[itrack]]
                     (x1, y1) = g.GetGridIndex(1, track_line.long, track_line.lat)
@@ -87,7 +94,8 @@ def main():
                     G1 += g.AdjacentGridLinks(1, x1, y1, gridlink_1)
                     (x2, y2) = g.GetGridIndex(2, track_line.long, track_line.lat)
                     G2 += g.AdjacentGridLinks(2, x2, y2, gridlink_2)
-
+            else:
+                continue
             G1 = RemoveDuplicates.unique(G1)
 
             number_gps = {}
@@ -184,15 +192,15 @@ def main():
                     pathlinks.append(lid)
                     ipa += 1
                 for link in pathlinks:
-                    rst_file.write(t_file[:-4])
+                    rst_file.write(folder)
                     rst_file.write(',' + str(link) + '\n')
             else:
-                rst_file.write(t_file[:-4])
+                rst_file.write(folder)
                 rst_file.write(',' + '0' + '\n')
                 rst_file.close()
 
             #print '\nAttaching points to road...' 
-            rvs.point_on_road(tracktime, tracklist, pathlinks, linklist, t_file)   
+            rvs.point_on_road(tracktime, tracklist, pathlinks, linklist, folder+'/'+t_file)   
             print '\n'+folder+': '+t_file+' complete.'
               
 if __name__ == "__main__":
