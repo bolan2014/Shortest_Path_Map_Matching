@@ -1,3 +1,7 @@
+'''
+Separate trips with passengers of each taxi.
+'''
+
 import sys
 
 def sprt(ifile):
@@ -24,9 +28,11 @@ def sorted_dict(info):
 	return map(info.get, key)
 
 def get_trip(folder, info):
+	count = 0
 	for i in info.iterkeys():
+		count += 1
 		new_info = sorted_dict(info[i])
-		fo = open('%s%s.txt'%(folder,i),'w')
+		fo = open('%s%s.txt'%(folder,count),'w')
 		for j in new_info:
 			fo.writelines(','.join(j))
 		fo.close()
