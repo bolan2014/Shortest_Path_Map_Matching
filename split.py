@@ -35,6 +35,6 @@ def writetxt(files,d):
         flink.close()
 
 if __name__ == '__main__':
-    data = readtxt(sys.argv[2])
+    data = readtxt(sys.argv[1])
     writetxt('raw_gps/', data)
 
