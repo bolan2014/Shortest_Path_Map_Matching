@@ -3,7 +3,6 @@ reading info of link, node, track
 '''
 
 import SHlink
-import TrackPoint
 
 
 def ReadingDRMinfo(fname, linklist, linkID, nodelist):
