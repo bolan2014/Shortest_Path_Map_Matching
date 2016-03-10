@@ -196,11 +196,11 @@ def main():
                 while ipa <= len(pathnodes)-2:
                     try:
                         lid = GLinkNode[pathnodes[ipa]][pathnodes[ipa+1]]
+                        pathlinks.append(lid)
+                        ipa += 1
                     except KeyError:
                         ipa += 1
                         continue
-                    pathlinks.append(lid)
-                    #ipa += 1
                 for link in pathlinks:
                     rst_file.write(folder)
                     rst_file.write(',' + str(link) + '\n')
