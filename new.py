@@ -18,7 +18,7 @@ pwd = os.getcwd()
 
 def main():
 
-    name = sys.argv[1]
+    #name = sys.argv[1]
     #print '\nInitializing...\n'
 
     linklist = dict()
@@ -29,16 +29,16 @@ def main():
 
     #print 'Reading DRMLink info...'
     r.ReadingDRMinfo(m_file, linklist, linkID, nodelist)
-
+    
     #print '\nCollecting links of Grid for type 1...'
     gridlink_1 = g.CollectGridLinks(1, linklist, linkID)
 
     #print '\nCollecting links of Grid for type 2...'
     gridlink_2 = g.CollectGridLinks(2, linklist, linkID)
-
+    
     for folder in os.listdir('section'):
-        if int(folder) < int(name):
-            continue
+        #if int(folder) < int(name):
+            #continue
         for t_file in os.listdir('section/'+folder):
 
             tracktime = list()
@@ -197,9 +197,10 @@ def main():
                     try:
                         lid = GLinkNode[pathnodes[ipa]][pathnodes[ipa+1]]
                     except KeyError:
+                        ipa += 1
                         continue
                     pathlinks.append(lid)
-                    ipa += 1
+                    #ipa += 1
                 for link in pathlinks:
                     rst_file.write(folder)
                     rst_file.write(',' + str(link) + '\n')
