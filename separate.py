@@ -3,6 +3,7 @@ Separate trips with passengers of each taxi.
 '''
 
 import sys
+import os
 
 def sprt(ifile):
 	info = dict()
@@ -38,10 +39,11 @@ def get_trip(folder, info):
 		fo.close()
 
 def main():
-	ifile = sys.argv[1]
-	folder = sys.argv[2]
-	info = sprt(ifile)
-	get_trip(folder, info)
+	for ifile in os.listdir('raw_gps/'):
+		folder = 'section/'+ifile[0:5]+'/'
+		info = sprt('raw_gps/'+ifile)
+		get_trip(folder, info)
+		print ifile[0:5] + ' complete.\n'
 	
 if __name__ == '__main__':
 	main()
